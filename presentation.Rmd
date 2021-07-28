@@ -1,0 +1,446 @@
+---
+title: "Introduction to Machine Learning"
+author: 
+  - "Marcel Neunhoeffer (LMU Munich)"
+  - "Christian Arnold (TA, Cardiff University)"
+date: '`r format(Sys.Date(), format = "%d %B %Y")`'
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    nature:
+      slideNumberFormat: "%current%"
+      highlightStyle: github
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+      navigation:
+        scroll: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  fig.width=9, fig.height=3.5, fig.retina=3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE,
+  hiline = TRUE
+)
+library(xaringanthemer)
+
+library(showtext)
+## Loading Google fonts (https://fonts.google.com/)
+font_add_google("Lato", "lato")
+font_add_google("Lora", "lora")
+
+## Automatically use showtext to render text
+showtext_auto()
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+color_vec <- c("#1c5253")
+style_mono_accent(
+  base_color = color_vec[1],
+  header_font_google = google_font("Lato"),
+  text_font_google   = google_font("Lora"),
+  code_font_google   = google_font("Fira Mono")
+)
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+library(RefManageR)
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+myBib <- ReadBib("./myBib.bib", check = FALSE)
+```
+
+<style type="text/css">
+.remark-slide-content {
+    font-size: 30px;
+}
+
+.table {
+  font-size: 8px;
+}
+
+
+</style>
+
+---
+class: inverse center middle
+
+## About Me
+
+???
+Marcel, researcher at the chair of Data science and statistics for the social sciences and humanities at the LMU Munich
+
+In my work Generative Adversarial Networks, a type of deep learning for social scientists.
+E.g. ml to predict elections, multiple imputation, the generation of privacy protective synthetic data, understanding and explaining ML methods to social scientists
+
+---
+
+## What is Machine Learning for You?
+
+<iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/a858802deca8a72b53a877ac263bf1d3/4406c1829ad3' style='position: absolute; top: 10; left: 0; width: 100%; height: 80%;' width='420'></iframe>
+
+???
+Before we get started I want to know a bit more about you. What is Machine Learning for you? No wrong answers (or only wrong answers?) 
+Summarize results...
+
+---
+
+## Machine Learning in the Social Sciences
+
+Some recent examples:
+
+- [Inferring Roll-Call Scores from Campaign Contributions Using Supervised Machine Learning](https://onlinelibrary.wiley.com/doi/10.1111/ajps.12376)
+
+- [Tree-Based Models for Political Science Data](https://onlinelibrary.wiley.com/doi/10.1111/ajps.12361)
+
+- [Understanding Delegation Through Machine Learning: A Method and Application to the European Union](https://www.cambridge.org/core/journals/american-political-science-review/article/understanding-delegation-through-machine-learning-a-method-and-application-to-the-european-union/1724F3ECFA1F0AABE3C7F8DA5C5D521B)
+
+- [Using machine learning to estimate the effect of racial segregation on COVID-19 mortality in the United States](https://www.pnas.org/content/118/7/e2015577118)
+- [Monitoring war destruction from space using machine learning](https://www.pnas.org/content/118/23/e2025400118)
+
+???
+
+- Support Vector Regression and RF
+- Tree based models for multiple tasks (e.g. )
+- Gradient Boosted decision trees
+- double lasso regression
+- CNN and Random forest
+
+---
+
+## Artificial Intelligence, Machine Learning and Deep Learning
+
+```{r echo = F}
+
+
+
+# set.seed(123)
+# hist(rnorm(1000), breaks = 30, col = viridis::viridis(1), border = "white",
+#      main = "", xlab = "", ylab = "", yaxt = "n", xaxt = "n")
+# title("Histogram of Normal Random Numbers", family = "lato", cex.main = 1, col.main = color_vec[1], adj = 0)
+# axis(1, family = "lora")
+
+# initialize a plot
+par(oma = c(0, 0, 0, 0))
+plot(c(-1, 1), c(-1, 1), type = "n", bty = "n", yaxt = "n", xaxt = "n", ylab = "", xlab = "")
+
+# prepare "circle data"
+radius = 1
+center_x = 0
+center_y = 0
+theta = seq(0, 2 * pi, length = 200) # angles for drawing points around the circle
+
+# draw the circle
+lines(x = radius * cos(theta) + center_x, y = radius * sin(theta) + center_y)
+text(-1, 0, labels = "Artificial Intelligence", family = "lora", pos = 4)
+# prepare "circle data"
+radius = 0.7
+center_x = 0.25
+center_y = 0
+theta = seq(0, 2 * pi, length = 200) 
+lines(x = radius * cos(theta) + center_x, y = radius * sin(theta) + center_y)
+text(-0.45, 0, labels = "Machine Learning", family = "lora", pos = 4)
+# prepare "circle data"
+radius = 0.4
+center_x = 0.5
+center_y = 0
+theta = seq(0, 2 * pi, length = 200) 
+lines(x = radius * cos(theta) + center_x, y = radius * sin(theta) + center_y)
+text(0.1, 0, labels = "Deep Learning", family = "lora", pos = 4)
+```
+
+???
+
+Some context, how do buzz words that you probably hear often related. 
+
+AI: Born in the 1940s/1950s rule based expert systems. Peaked in the 1980s. Successful to solve well-defined, logical problems e.g. playing chess.
+
+ML: Trained rather than explicitly programmed, started to flourish in the 1990s. 
+Probably the most popular and successful subfield of AI. Very closely related to mathematical statistics, however with a focus/need to work with big data. Engineering oriented and comparatively little mathematical theory.
+
+DL: All machine learning tries to learn useful representations of input data. Deep learning layered representations, learning more complex representations by splitting it up in simpler layered representations. More on that tomorrow when Chris will give an introduction to deep learning.
+
+---
+
+## What We Are Going to Learn Today
+
+1. Machine Learning Basics
+
+2. A look under the hood of some Machine Learning Models
+
+3. Tools and resources that help you to get started on your own projects
+
+
+???
+
+Goal: Making machine learning Uncool Again
+
+---
+
+class: inverse center middle
+
+## Machine Learning Basics
+
+---
+
+## What is Machine Learning?
+
+
+A computer program is said to learn from experience $E$ with respect to some class of tasks $T$ and performance measure $P$, if its performance at tasks in $T$, as measured by $P$, improves with experience $E$.
+.right[-- <cite>Mitchell 1997</cite>]
+
+
+---
+
+## The Task $T$
+
+Typically something like:
+
+- Classification
+- Regression
+- Clustering
+
+But many more (specific) tasks are possible, e.g.
+
+- Transcription
+- Machine Translation
+- Imputation of Missing Values
+- ...
+
+???
+
+- Transcription: transcribe unstructured data into discrete textual form. E.g. processing of images of address numbers to number (text) representation, or speech recognition
+
+
+---
+
+## The Performance Measure $P$
+
+- A quantitative (continuous valued) measure of the performance of a machine learning algorithm.
+
+- Specific to the task $T$ ( for classification you could e.g. choose accuracy or an error rate).
+
+- Important: Performance is measured on a test set i.e. data that was not part of the training.
+
+---
+
+## The Experience $E$
+
+- Typically Machine Learning models **experience** an entire dataset.
+
+- The distinction between unsupervised and supervised Machine Learning characterizes the experience.
+  - Unsupervised ML: experience dataset containing features. The goal is to learn useful properties of the structure (e.g. the entire joint probability distribution that generated the dataset or dividing the data into clusters of similar examples).
+  - Supervised ML: experience dataset containing features and a label/target associated with each example. The goal is to learn the distribution of labels/targets given features.
+  
+---
+
+## Datasets
+
+- Typically data is organised in a so called design matrix (often denoted by $\mathbf{X}$). Each example $X_i$ must have the same size (e.g. every observation must have the same number of features/variables). In total the design matrix will have $m$ rows (where $m$ is the number of observations).
+
+- Machine Learning with other collections of examples is possible (e.g. heterogenous data like images of different size, video sequences of different length, ...). Such data can be described as a set containing $m$ elements $\{\mathbf{x}^{(1)},\mathbf{x}^{(2)}, \ldots, \mathbf{x}^{(m)}  \}$. Now examples $\mathbf{x}^{(1)}$ and $\mathbf{x}^{(2)}$ could be of different size.
+
+- For supervised machine learning we also need a vector of labels/target values $\mathbf{y}$.
+
+???
+
+Alright this sounds complicated. Let's look at some data.
+
+---
+class: table
+
+## A Look at the German Credit Dataset
+
+
+```{r echo = F}
+data("german", package = "rchallenge")
+
+DT::datatable(
+  head(german, 8),
+  fillContainer = FALSE, options = list(pageLength = 8, scrollX = T)
+)
+
+# knitr::kable(head(german, 8), format = 'html')
+```
+
+Source: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/adult)
+
+
+???
+
+This looks less scary. We can see that we organize observations in rows (like in a spreadsheet), and each observation has the same number of columns.
+
+---
+
+## A General Template for Machine Learning
+
+
+1. Data (related to $E$)
+
+2. Model (related to $T$)
+
+3. Cost function (often follows from the model, related to $P$)
+
+4. Optimization procedure (learning procedure)
+
+
+---
+
+class: inverse center middle
+
+## A First Machine Learning Algorithm
+
+Logistic Regression from Scratch
+
+---
+
+## A General Template for Machine Learning
+
+
+1. Data (related to $E$)
+
+2. Model (related to $T$)
+
+3. Cost function (often follows from the model, related to $P$)
+
+4. Optimization procedure (learning procedure)
+
+???
+
+The recipe for constructing a learning algorithm by combining models, costs, and optimization algorithms supports both supervised and unsupervised learning. The linear regression example shows how to support supervised learning.
+
+Most machine learning algorithms make use of this recipe, though it may notbe immediately obvious. If a machine learning algorithm seems especially unique or hand designed, it can usually be understood as using a special-case optimizer. 
+
+Some models, such as decision trees and k-means, require special-case optimizers because their cost functions have ﬂat regions that make them inappropriate for minimization by gradient-based optimizers. Recognizing that most machine learning algorithms can be described using this recipe helps to see the diﬀerent algorithms as part of a taxonomy of methods for doing related tasks that work for similar reasons, rather than as a long list of algorithms that each have separate justifications.
+
+---
+
+## Classification and regression trees (CART)
+
+1. Find the best rule to split observations based on variables' values.
+
+2. Once a rule is selected and splits a node into two, the same process is applied to each child node (i.e. it is a recursive procedure)
+
+3. Splitting stops when CART detects no further gain can be made, or some pre-set stopping rules are met. 
+
+Each branch of the tree ends in a terminal node. Each observation falls into one and exactly one terminal node, and each terminal node is uniquely defined by a set of rules.
+
+???
+
+Measures of impurity like gini coefficient or entropy. Find split with biggest gain.
+
+---
+
+## k-means
+
+
+1. Set number of clusters $k$.
+
+2. Set $k$ points as initial centroids of the clusters. (E.g. by selecting $k$ points uniformly at random.)
+
+3. Assign each point a cluster according to the nearest centroid.
+
+4. Recalculate cluster centroids based on the assignment in 3 as the mean of all data points belonging to that cluster.
+
+5. Repeat 3 and 4 until convergence
+
+---
+
+## Hyperparameters
+
+- Parameters that need to be set before optimization (e.g. learning rate and batch size in the logistic regression example).
+- Not learned from data.
+- Problem: Default hyperparameter values might not be optimal for your problem.
+- Solution: Tune hyperparameter values for optimal performance.
+- Different Strategies like Grid Search or Random Search, typically in combination with cross-validation.
+
+---
+
+## Cross-Validation
+
+.center[
+```{r echo = F, fig.retina=3, out.width = 700}
+knitr::include_graphics("LOOCV.gif")
+```
+]
+Source: https://en.wikipedia.org/wiki/Cross-validation_(statistics) 
+
+???
+
+Resampling e.g. to tune hyperparameters. 
+
+---
+
+## Overfitting, Underfitting, Bias and Variance
+
+.center[
+```{r echo = F, fig.retina=3, out.width = 700}
+knitr::include_graphics("bias-variance.png")
+```
+]
+Source: [Goodfellow et al. 2016](https://www.deeplearningbook.org)
+
+???
+
+Figure 5.6: As capacity increases (x-axis), bias (dotted) tends to decrease and variance(dashed) tends to increase, yielding another U-shaped curve for generalization error (boldcurve). If we vary capacity along one axis, there is an optimal capacity, with underﬁttingwhen the capacity is below this optimum and overﬁtting when it is above. This relationshipis similar to the relationship between capacity, underﬁtting, and overﬁtting, discussed insection 5.2 and ﬁgure 5.3.
+
+---
+
+class: inverse middle center
+
+## Tools and resources that help you to get started on your own projects
+
+---
+
+## Tools and resources that help you to get started on your own projects
+
+Meta Machine Learning Packages in R:
+- 1st Generation: `caret` and `mlr`
+- 2nd Generation: `tidymodels` and `mlr3`
+
+Popular library in python:
+- `scikit-learn`
+
+???
+
+The idea of these libraries is very similar. Give access to a multitude of algorithms/models/learners through one interface. And make the work with the machine learning pipeline simple and reproducible.
+
+---
+
+class: inverse center middle
+
+## Introduction to mlr3
+
+---
+
+class: inverse center middle
+
+## Outlook to Deep Learning
+
+---
+
+## References
+
+
+---
+class: center, middle
+
+# Thanks!
+
+Slides created via the R packages:
+
+[**xaringan**](https://github.com/yihui/xaringan)<br>
+[gadenbuie/xaringanthemer](https://github.com/gadenbuie/xaringanthemer)
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).

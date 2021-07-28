@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Introduction to Machine Learning</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Marcel Neunhoeffer (LMU Munich)" />
+    <meta name="author" content="Christian Arnold (TA, Cardiff University)" />
+    <meta name="date" content="2021-07-28" />
+    <script src="presentation_files/header-attrs/header-attrs.js"></script>
+    <script src="presentation_files/htmlwidgets/htmlwidgets.js"></script>
+    <script src="presentation_files/jquery/jquery.min.js"></script>
+    <link href="presentation_files/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="presentation_files/datatables-binding/datatables.js"></script>
+    <link href="presentation_files/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="presentation_files/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="presentation_files/dt-core/js/jquery.dataTables.min.js"></script>
+    <link href="presentation_files/crosstalk/css/crosstalk.css" rel="stylesheet" />
+    <script src="presentation_files/crosstalk/js/crosstalk.min.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to Machine Learning
+### Marcel Neunhoeffer (LMU Munich)
+### Christian Arnold (TA, Cardiff University)
+### 28 July 2021
+
+---
+
+
+
+
+
+
+
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 30px;
+}
+
+.table {
+  font-size: 8px;
+}
+
+
+&lt;/style&gt;
+
+---
+class: inverse center middle
+
+## About Me
+
+???
+Marcel, researcher at the chair of Data science and statistics for the social sciences and humanities at the LMU Munich
+
+In my work Generative Adversarial Networks, a type of deep learning for social scientists.
+E.g. ml to predict elections, multiple imputation, the generation of privacy protective synthetic data, understanding and explaining ML methods to social scientists
+
+---
+
+## What is Machine Learning for You?
+
+&lt;iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/a858802deca8a72b53a877ac263bf1d3/4406c1829ad3' style='position: absolute; top: 10; left: 0; width: 100%; height: 80%;' width='420'&gt;&lt;/iframe&gt;
+
+???
+Before we get started I want to know a bit more about you. What is Machine Learning for you? No wrong answers (or only wrong answers?) 
+Summarize results...
+
+---
+
+## Machine Learning in the Social Sciences
+
+Some recent examples:
+
+- [Inferring Roll-Call Scores from Campaign Contributions Using Supervised Machine Learning](https://onlinelibrary.wiley.com/doi/10.1111/ajps.12376)
+
+- [Tree-Based Models for Political Science Data](https://onlinelibrary.wiley.com/doi/10.1111/ajps.12361)
+
+- [Understanding Delegation Through Machine Learning: A Method and Application to the European Union](https://www.cambridge.org/core/journals/american-political-science-review/article/understanding-delegation-through-machine-learning-a-method-and-application-to-the-european-union/1724F3ECFA1F0AABE3C7F8DA5C5D521B)
+
+- [Using machine learning to estimate the effect of racial segregation on COVID-19 mortality in the United States](https://www.pnas.org/content/118/7/e2015577118)
+- [Monitoring war destruction from space using machine learning](https://www.pnas.org/content/118/23/e2025400118)
+
+???
+
+- Support Vector Regression and RF
+- Tree based models for multiple tasks (e.g. )
+- Gradient Boosted decision trees
+- double lasso regression
+- CNN and Random forest
+
+---
+
+## Artificial Intelligence, Machine Learning and Deep Learning
+
+&lt;img src="presentation_files/figure-html/unnamed-chunk-1-1.png" width="100%" /&gt;
+
+???
+
+Some context, how do buzz words that you probably hear often related. 
+
+AI: Born in the 1940s/1950s rule based expert systems. Peaked in the 1980s. Successful to solve well-defined, logical problems e.g. playing chess.
+
+ML: Trained rather than explicitly programmed, started to flourish in the 1990s. 
+Probably the most popular and successful subfield of AI. Very closely related to mathematical statistics, however with a focus/need to work with big data. Engineering oriented and comparatively little mathematical theory.
+
+DL: All machine learning tries to learn useful representations of input data. Deep learning layered representations, learning more complex representations by splitting it up in simpler layered representations. More on that tomorrow when Chris will give an introduction to deep learning.
+
+---
+
+## What We Are Going to Learn Today
+
+1. Machine Learning Basics
+
+2. A look under the hood of some Machine Learning Models
+
+3. Tools and resources that help you to get started on your own projects
+
+
+???
+
+Goal: Making machine learning Uncool Again
+
+---
+
+class: inverse center middle
+
+## Machine Learning Basics
+
+---
+
+## What is Machine Learning?
+
+
+A computer program is said to learn from experience `\(E\)` with respect to some class of tasks `\(T\)` and performance measure `\(P\)`, if its performance at tasks in `\(T\)`, as measured by `\(P\)`, improves with experience `\(E\)`.
+.right[-- &lt;cite&gt;Mitchell 1997&lt;/cite&gt;]
+
+
+---
+
+## The Task `\(T\)`
+
+Typically something like:
+
+- Classification
+- Regression
+- Clustering
+
+But many more (specific) tasks are possible, e.g.
+
+- Transcription
+- Machine Translation
+- Imputation of Missing Values
+- ...
+
+???
+
+- Transcription: transcribe unstructured data into discrete textual form. E.g. processing of images of address numbers to number (text) representation, or speech recognition
+
+
+---
+
+## The Performance Measure `\(P\)`
+
+- A quantitative (continuous valued) measure of the performance of a machine learning algorithm.
+
+- Specific to the task `\(T\)` ( for classification you could e.g. choose accuracy or an error rate).
+
+- Important: Performance is measured on a test set i.e. data that was not part of the training.
+
+---
+
+## The Experience `\(E\)`
+
+- Typically Machine Learning models **experience** an entire dataset.
+
+- The distinction between unsupervised and supervised Machine Learning characterizes the experience.
+  - Unsupervised ML: experience dataset containing features. The goal is to learn useful properties of the structure (e.g. the entire joint probability distribution that generated the dataset or dividing the data into clusters of similar examples).
+  - Supervised ML: experience dataset containing features and a label/target associated with each example. The goal is to learn the distribution of labels/targets given features.
+  
+---
+
+## Datasets
+
+- Typically data is organised in a so called design matrix (often denoted by `\(\mathbf{X}\)`). Each example `\(X_i\)` must have the same size (e.g. every observation must have the same number of features/variables). In total the design matrix will have `\(m\)` rows (where `\(m\)` is the number of observations).
+
+- Machine Learning with other collections of examples is possible (e.g. heterogenous data like images of different size, video sequences of different length, ...). Such data can be described as a set containing `\(m\)` elements `\(\{\mathbf{x}^{(1)},\mathbf{x}^{(2)}, \ldots, \mathbf{x}^{(m)}  \}\)`. Now examples `\(\mathbf{x}^{(1)}\)` and `\(\mathbf{x}^{(2)}\)` could be of different size.
+
+- For supervised machine learning we also need a vector of labels/target values `\(\mathbf{y}\)`.
+
+???
+
+Alright this sounds complicated. Let's look at some data.
+
+---
+class: table
+
+## A Look at the German Credit Dataset
+
+
+<div id="htmlwidget-98edcd5f4e3298c1d809" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-98edcd5f4e3298c1d809">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8"],["no checking account","no checking account","... &lt; 0 DM","no checking account","no checking account","no checking account","no checking account","no checking account"],[18,9,12,12,12,10,8,6],["all credits at this bank paid back duly","all credits at this bank paid back duly","no credits taken/all credits paid back duly","all credits at this bank paid back duly","all credits at this bank paid back duly","all credits at this bank paid back duly","all credits at this bank paid back duly","all credits at this bank paid back duly"],["car (used)","others","retraining","others","others","others","others","others"],[1049,2799,841,2122,2171,2241,3398,1361],["unknown/no savings account","unknown/no savings account","... &lt;  100 DM","unknown/no savings account","unknown/no savings account","unknown/no savings account","unknown/no savings account","unknown/no savings account"],["&lt; 1 yr","1 &lt;= ... &lt; 4 yrs","4 &lt;= ... &lt; 7 yrs","1 &lt;= ... &lt; 4 yrs","1 &lt;= ... &lt; 4 yrs","&lt; 1 yr","4 &lt;= ... &lt; 7 yrs","&lt; 1 yr"],["&lt; 20","25 &lt;= ... &lt; 35","25 &lt;= ... &lt; 35","20 &lt;= ... &lt; 25","&lt; 20","&gt;= 35","&gt;= 35","25 &lt;= ... &lt; 35"],["female : non-single or male : single","male : married/widowed","female : non-single or male : single","male : married/widowed","male : married/widowed","male : married/widowed","male : married/widowed","male : married/widowed"],["none","none","none","none","none","none","none","none"],["&gt;= 7 yrs","1 &lt;= ... &lt; 4 yrs","&gt;= 7 yrs","1 &lt;= ... &lt; 4 yrs","&gt;= 7 yrs","4 &lt;= ... &lt; 7 yrs","&gt;= 7 yrs","&gt;= 7 yrs"],["car or other","unknown / no property","unknown / no property","unknown / no property","car or other","unknown / no property","unknown / no property","unknown / no property"],[21,36,23,39,38,48,39,40],["none","none","none","none","bank","none","none","none"],["for free","for free","for free","for free","rent","for free","rent","rent"],["1","2-3","1","2-3","2-3","2-3","2-3","1"],["skilled employee/official","skilled employee/official","unskilled - resident","unskilled - resident","unskilled - resident","unskilled - resident","unskilled - resident","unskilled - resident"],["0 to 2","3 or more","0 to 2","3 or more","0 to 2","3 or more","0 to 2","3 or more"],["no","no","no","no","no","no","no","no"],["no","no","no","yes","yes","yes","yes","yes"],["good","good","good","good","good","good","good","good"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>status<\/th>\n      <th>duration<\/th>\n      <th>credit_history<\/th>\n      <th>purpose<\/th>\n      <th>amount<\/th>\n      <th>savings<\/th>\n      <th>employment_duration<\/th>\n      <th>installment_rate<\/th>\n      <th>personal_status_sex<\/th>\n      <th>other_debtors<\/th>\n      <th>present_residence<\/th>\n      <th>property<\/th>\n      <th>age<\/th>\n      <th>other_installment_plans<\/th>\n      <th>housing<\/th>\n      <th>number_credits<\/th>\n      <th>job<\/th>\n      <th>people_liable<\/th>\n      <th>telephone<\/th>\n      <th>foreign_worker<\/th>\n      <th>credit_risk<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,5,13]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+Source: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/adult)
+
+
+???
+
+This looks less scary. We can see that we organize observations in rows (like in a spreadsheet), and each observation has the same number of columns.
+
+---
+
+## A General Template for Machine Learning
+
+
+1. Data (related to `\(E\)`)
+
+2. Model (related to `\(T\)`)
+
+3. Cost function (often follows from the model, related to `\(P\)`)
+
+4. Optimization procedure (learning procedure)
+
+
+---
+
+class: inverse center middle
+
+## A First Machine Learning Algorithm
+
+Logistic Regression from Scratch
+
+---
+
+## A General Template for Machine Learning
+
+
+1. Data (related to `\(E\)`)
+
+2. Model (related to `\(T\)`)
+
+3. Cost function (often follows from the model, related to `\(P\)`)
+
+4. Optimization procedure (learning procedure)
+
+???
+
+The recipe for constructing a learning algorithm by combining models, costs, and optimization algorithms supports both supervised and unsupervised learning. The linear regression example shows how to support supervised learning.
+
+Most machine learning algorithms make use of this recipe, though it may notbe immediately obvious. If a machine learning algorithm seems especially unique or hand designed, it can usually be understood as using a special-case optimizer. 
+
+Some models, such as decision trees and k-means, require special-case optimizers because their cost functions have ﬂat regions that make them inappropriate for minimization by gradient-based optimizers. Recognizing that most machine learning algorithms can be described using this recipe helps to see the diﬀerent algorithms as part of a taxonomy of methods for doing related tasks that work for similar reasons, rather than as a long list of algorithms that each have separate justifications.
+
+---
+
+## Classification and regression trees (CART)
+
+1. Find the best rule to split observations based on variables' values.
+
+2. Once a rule is selected and splits a node into two, the same process is applied to each child node (i.e. it is a recursive procedure)
+
+3. Splitting stops when CART detects no further gain can be made, or some pre-set stopping rules are met. 
+
+Each branch of the tree ends in a terminal node. Each observation falls into one and exactly one terminal node, and each terminal node is uniquely defined by a set of rules.
+
+???
+
+Measures of impurity like gini coefficient or entropy. Find split with biggest gain.
+
+---
+
+## k-means
+
+
+1. Set number of clusters `\(k\)`.
+
+2. Set `\(k\)` points as initial centroids of the clusters. (E.g. by selecting `\(k\)` points uniformly at random.)
+
+3. Assign each point a cluster according to the nearest centroid.
+
+4. Recalculate cluster centroids based on the assignment in 3 as the mean of all data points belonging to that cluster.
+
+5. Repeat 3 and 4 until convergence
+
+---
+
+## Hyperparameters
+
+- Parameters that need to be set before optimization (e.g. learning rate and batch size in the logistic regression example).
+- Not learned from data.
+- Problem: Default hyperparameter values might not be optimal for your problem.
+- Solution: Tune hyperparameter values for optimal performance.
+- Different Strategies like Grid Search or Random Search, typically in combination with cross-validation.
+
+---
+
+## Cross-Validation
+
+.center[
+&lt;img src="LOOCV.gif" width="700" /&gt;
+]
+Source: https://en.wikipedia.org/wiki/Cross-validation_(statistics) 
+
+???
+
+Resampling e.g. to tune hyperparameters. 
+
+---
+
+## Overfitting, Underfitting, Bias and Variance
+
+.center[
+&lt;img src="bias-variance.png" width="700" /&gt;
+]
+Source: [Goodfellow et al. 2016](https://www.deeplearningbook.org)
+
+???
+
+Figure 5.6: As capacity increases (x-axis), bias (dotted) tends to decrease and variance(dashed) tends to increase, yielding another U-shaped curve for generalization error (boldcurve). If we vary capacity along one axis, there is an optimal capacity, with underﬁttingwhen the capacity is below this optimum and overﬁtting when it is above. This relationshipis similar to the relationship between capacity, underﬁtting, and overﬁtting, discussed insection 5.2 and ﬁgure 5.3.
+
+---
+
+class: inverse middle center
+
+## Tools and resources that help you to get started on your own projects
+
+---
+
+## Tools and resources that help you to get started on your own projects
+
+Meta Machine Learning Packages in R:
+- 1st Generation: `caret` and `mlr`
+- 2nd Generation: `tidymodels` and `mlr3`
+
+Popular library in python:
+- `scikit-learn`
+
+???
+
+The idea of these libraries is very similar. Give access to a multitude of algorithms/models/learners through one interface. And make the work with the machine learning pipeline simple and reproducible.
+
+---
+
+class: inverse center middle
+
+## Introduction to mlr3
+
+---
+
+class: inverse center middle
+
+## Outlook to Deep Learning
+
+---
+
+## References
+
+
+---
+class: center, middle
+
+# Thanks!
+
+Slides created via the R packages:
+
+[**xaringan**](https://github.com/yihui/xaringan)&lt;br&gt;
+[gadenbuie/xaringanthemer](https://github.com/gadenbuie/xaringanthemer)
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](http://yihui.name/knitr), and [R Markdown](https://rmarkdown.rstudio.com).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "github",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true,
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
