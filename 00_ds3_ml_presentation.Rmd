@@ -73,6 +73,16 @@ myBib <- ReadBib("./myBib.bib", check = FALSE)
 
 </style>
 
+## The Course Materials
+
+You can find the presentation at:
+
+[http://marcel-neunhoeffer.com/ds3_ml/00_ds3_ml_presentation.html#1](http://marcel-neunhoeffer.com/ds3_ml/00_ds3_ml_presentation.html#1)
+
+The colab workbooks can be found here:
+
+[https://github.com/mneunhoe/ds3_ml](https://github.com/mneunhoe/ds3_ml)
+
 ---
 class: inverse center middle
 
