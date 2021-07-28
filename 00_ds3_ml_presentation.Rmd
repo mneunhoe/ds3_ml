@@ -370,9 +370,13 @@ Measures of impurity like gini coefficient or entropy. Find split with biggest g
 ## Hyperparameters
 
 - Parameters that need to be set before optimization (e.g. learning rate and batch size in the logistic regression example).
+
 - Not learned from data.
+
 - Problem: Default hyperparameter values might not be optimal for your problem.
+
 - Solution: Tune hyperparameter values for optimal performance.
+
 - Different Strategies like Grid Search or Random Search, typically in combination with cross-validation.
 
 ---
