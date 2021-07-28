@@ -446,6 +446,11 @@ class: inverse center middle
 
 ## References
 
+```{r refs, echo=FALSE, results="asis"}
+NoCite(myBib, 1:3)
+PrintBibliography(myBib)
+
+```
 
 ---
 class: center, middle
